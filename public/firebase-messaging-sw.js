@@ -4,18 +4,18 @@
 // See `Access registration token section` @ https://firebase.google.com/docs/cloud-messaging/js/client#retrieve-the-current-registration-token
 
 // Scripts for firebase and firebase messaging
-importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js");
-importScripts("https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js");
+importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js');
 
 // Initialize the Firebase app in the service worker by passing the generated config
 const firebaseConfig = {
-  apiKey: "AIzaSyBLk-ub-H-_bylhVuUc6PHl2IpBnFtlu0Y",
-  authDomain: "sundaymart-208c9.firebaseapp.com",
-  projectId: "sundaymart-208c9",
-  storageBucket: "sundaymart-208c9.appspot.com",
-  messagingSenderId: "106432296111",
-  appId: "1:106432296111:web:6a0197fe09667850d8505a",
-  measurementId: "G-MYLV3GXGBM",
+  apiKey: 'AIzaSyDo4R8pPtJTtyT4F9budtA4BnOm8ZcxDPE',
+  authDomain: 'sameh-mall-2c072.firebaseapp.com',
+  projectId: 'sameh-mall-2c072',
+  storageBucket: 'sameh-mall-2c072.appspot.com',
+  messagingSenderId: '470734001235',
+  appId: '1:470734001235:web:004d6e76eabd2bc9a9e2a6',
+  measurementId: 'G-5N2Z330HV3',
 };
 
 firebase.initializeApp(firebaseConfig);
