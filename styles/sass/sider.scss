@@ -206,14 +206,14 @@
 
       .icon,
       .name {
-        color: #16aa16;
+        color: #fe0000;
       }
     }
 
     .request-wallet {
       .icon,
       .name {
-        color: #FFBF00;
+        color: #ffbf00;
       }
     }
   }
@@ -303,7 +303,7 @@
         }
 
         .label {
-          font-family: "Inter", sans-serif !important;
+          font-family: 'Inter', sans-serif !important;
         }
 
         .label a {
@@ -312,7 +312,7 @@
           line-height: 19px;
           color: var(--black);
           text-decoration: none;
-          font-family: "Inter", sans-serif !important;
+          font-family: 'Inter', sans-serif !important;
         }
 
         .suffix {
