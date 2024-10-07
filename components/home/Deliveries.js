@@ -6,7 +6,7 @@ const Deliveries = () => {
       <div className="get_deliveries">
         <div className="deliveries-wrapper">
           <div className="item deliveries">
-            <div className="title">Get deliveries with Sundaymart</div>
+            <div className="title">Get deliveries with Sameh Mall</div>
             {getStaticImage(images.MobileApp)}
           </div>
           <div className="store_market">

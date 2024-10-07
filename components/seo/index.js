@@ -1,11 +1,11 @@
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { parseCookies } from "nookies";
+import Head from 'next/head';
+import {useRouter} from 'next/router';
+import {parseCookies} from 'nookies';
 
-export default function SEO({ title, description, image, keywords }) {
+export default function SEO({title, description, image, keywords}) {
   const router = useRouter();
   const cookies = parseCookies();
-  const site_title = "Sundaymart";
+  const site_title = 'Sameh Mall';
   const currentURL = process.env.NEXT_PUBLIC_BASE_URL + router?.asPath;
   return (
     <Head>

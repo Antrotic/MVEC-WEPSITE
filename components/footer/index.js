@@ -61,7 +61,7 @@ const Footer = () => {
             <ul>
               <li className="title">{tl("Help")}</li>
               <Link href="/about">
-                <li>{tl("About Sundaymart")}</li>
+                <li>{tl("About Sameh Mall")}</li>
               </Link>
               <Link href="/referrals">
                 <li>{tl("Referrals")}</li>
