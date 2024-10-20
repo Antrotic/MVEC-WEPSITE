@@ -59,7 +59,7 @@ const Store = ({ filter, totalCount }) => {
       )}
       {category ? (
         <>
-          <div className="title-category">Category</div>
+          {/* <div className="title-category">Category</div> */}
           <div className="together-wrapper">
             <StoreCategory
               handleCategory={handleCategory}
