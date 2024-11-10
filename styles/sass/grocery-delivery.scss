@@ -1,0 +1,129 @@
+.grocery_delivery {
+    .items {
+        display: flex;
+        gap: 30px;
+        align-items: center;
+
+        .item {
+            position: relative;
+            width: 31.5%;
+            height: 464px;
+            border-radius: 15px;
+            margin-top: 30px;
+            border: 1px solid var(--store-border);
+            cursor: pointer;
+            transition: all ease 300ms;
+
+            @media (max-width: 768px) {
+                height: 389px;
+                margin-top: 0;
+            }
+
+
+            .context {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 35px;
+                color: var(--black) !important;
+                border-radius: 15px;
+
+                .number {
+                    font-weight: 500;
+                    font-size: 45px;
+                    line-height: 55px;
+                    letter-spacing: -0.03em;
+                }
+
+                .name {
+                    font-weight: 500;
+                    font-size: 45px;
+                    line-height: 55px;
+                    letter-spacing: -0.03em;
+                    width: 220px;
+                }
+
+                .description {
+                    font-weight: 500;
+                    font-size: 18px;
+                    line-height: 30px;
+                    letter-spacing: -0.03em;
+                }
+
+                &:hover {
+                    color: #fff !important;
+                }
+
+                @media (max-width: 768px) {
+                    padding: 30px 25px;
+                }
+            }
+
+            &:hover {
+
+                .context {
+                    color: #fff !important;
+                    background: rgba($color: #000000, $alpha: 0.3);
+                }
+
+                video {
+                    visibility: visible;
+                    opacity: 1;
+                }
+            }
+
+            video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 15px;
+                visibility: hidden;
+                opacity: 0;
+            }
+
+            .text-dark {
+                color: var(--black);
+            }
+
+            @media (max-width: 523px) {
+                width: 100%;
+            }
+
+            @media (min-width: 523px) and (max-width: 768px) {
+                flex-wrap: wrap;
+                width: 47%;
+            }
+        }
+
+        @media (max-width: 375px) {
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 375px) and (max-width: 768px) {
+            flex-wrap: wrap;
+        }
+    }
+
+    .title {
+        font-family: "Inter";
+        font-style: normal;
+        font-weight: 500;
+        font-size: 26px;
+        line-height: 42px;
+        letter-spacing: -0.03em;
+        color: var(--black);
+
+        @media (max-width: 768px) {
+            font-size: 20px;
+            line-height: 24px;
+            margin-bottom: 22px;
+        }
+    }
+
+}
