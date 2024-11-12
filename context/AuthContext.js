@@ -13,6 +13,7 @@ import {
 import { auth } from "../services/firebase";
 import { setCookie, parseCookies } from "nookies";
 import { setCookies } from "../utils/setCookies";
+import { migrateGuestCart } from "../utils/cartMigration";
 
 export const AuthContext = createContext();
 
@@ -23,8 +24,10 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState({});
   const [userLocation, setUserLocation] = useState("");
 
-  function logIn(email, password) {
-    return signInWithEmailAndPassword(auth, email, password);
+  async function logIn(email, password) {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    await migrateGuestCart();
+    return result;
   }
   function signUp(email, password) {
     return createUserWithEmailAndPassword(auth, email, password);
@@ -32,17 +35,20 @@ export function AuthProvider({ children }) {
   function logOut() {
     return signOut(auth);
   }
-  function googleSignIn() {
+  async function googleSignIn() {
     const googleAuthProvider = new GoogleAuthProvider();
     googleAuthProvider.setCustomParameters({ prompt: "select_account" });
-
-    return signInWithPopup(auth, googleAuthProvider);
+    const result = await signInWithPopup(auth, googleAuthProvider);
+    await migrateGuestCart();
+    return result;
   }
-  function facebookSignIn() {
+  async function facebookSignIn() {
     const facebookAuthProvider = new FacebookAuthProvider();
-    return signInWithPopup(auth, facebookAuthProvider);
+    const result = await signInWithPopup(auth, facebookAuthProvider);
+    await migrateGuestCart();
+    return result;
   }
-  function phoneNumberSignIn(phoneNumber) {
+  async function phoneNumberSignIn(phoneNumber) {
     const appVerifier = new RecaptchaVerifier(
       "sign-in-button",
       {
@@ -54,7 +60,9 @@ export function AuthProvider({ children }) {
       auth
     );
 
-    return signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+    const result = await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+    await migrateGuestCart();
+    return result;
   }
 
   useEffect(() => {
