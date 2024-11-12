@@ -18,7 +18,8 @@ import useDebounce from "../hooks/useDebounce";
 import { MainContext } from "./MainContext";
 import { setIsOpenConfirm, setOpengomodal } from "../redux/slices/mainState";
 import { findObjectByProductId } from "../utils/findObjectByProductId";
-export const OrderContext = createContext();
+
+const OrderContext = createContext();
 
 const OrderContextProvider = ({ children }) => {
   const dispatch = useDispatch();
@@ -52,6 +53,7 @@ const OrderContextProvider = ({ children }) => {
     destroyCookie(null, "cart_id", { path: "/" });
     destroyCookie(null, "shop_id", { path: "/" });
   };
+
   const setCart = (data) => {
     if (data?.length === 0) dispatch(setToCart([]));
     const newData = data?.userCarts?.flatMap((element) => element.cartDetails);
@@ -65,6 +67,7 @@ const OrderContextProvider = ({ children }) => {
     ]);
     if (newData2) dispatch(setToCart(newData2));
   };
+
   const getCart = () => {
     setCartLoader(true);
     CartApi.get({ shop_id: cartData?.shop_id ? cartData?.shop_id : shop?.id })
@@ -79,6 +82,7 @@ const OrderContextProvider = ({ children }) => {
         setCartLoader(false);
       });
   };
+
   const getCartMember = () => {
     setCartLoader(true);
     CartApi.getMember({
@@ -105,10 +109,12 @@ const OrderContextProvider = ({ children }) => {
         setCartLoader(false);
       });
   };
+
   const getCurrentProduct = (data) => {
     const currentProduct = cart.cartItems.find((item) => item?.id === data?.id);
     return currentProduct;
   };
+
   const decrease = (data) => {
     setShopProduct(data);
     const c_p = getCurrentProduct(data);
@@ -122,6 +128,7 @@ const OrderContextProvider = ({ children }) => {
       });
     }
   };
+
   const increase = (data) => {
     setShopProduct(data);
     const currentProduct = getCurrentProduct(data);
@@ -140,6 +147,7 @@ const OrderContextProvider = ({ children }) => {
     }
     dispatch(getTotals(shop?.id));
   };
+
   const handleAddToCart = (product) => {
     const cookies = parseCookies();
     if (
@@ -155,15 +163,22 @@ const OrderContextProvider = ({ children }) => {
         dispatch(getTotals(shop?.id));
       });
     } else {
-      toast.error("Please login first");
-      handleAuth("login");
+      // Use guest cart functionality instead of requiring login
+      setShopProduct(product);
+      setListener({ qty: product?.min_qty, id: product.id });
+      batch(() => {
+        dispatch(addToCart({ ...product, shop, isGuest: true }));
+        dispatch(getTotals(shop?.id));
+      });
     }
   };
+
   const handleError = (error) => {
     console.log(error);
     dispatch(removeFromCart(shopProduct));
     toast.error(error.response?.data.message);
   };
+
   const fetchCart = () => {
     if (cart_id) getCartMember();
     else getCart();
@@ -172,6 +187,12 @@ const OrderContextProvider = ({ children }) => {
   };
 
   const addToServerCart = () => {
+    // Skip server sync for guest carts
+    if (!cookies.access_token && !cart_id) {
+      setCartLoader(false);
+      return;
+    }
+
     setCartLoader(true);
     if (cart_id) {
       CartApi.memberCreate({
@@ -191,7 +212,7 @@ const OrderContextProvider = ({ children }) => {
         .finally(() => {
           setCartLoader(false);
         });
-    } else if (cookies.access_token)
+    } else if (cookies.access_token) {
       CartApi.create({
         shop_id: shop?.id,
         shop_product_id: shopProduct.id,
@@ -209,7 +230,9 @@ const OrderContextProvider = ({ children }) => {
         .finally(() => {
           setCartLoader(false);
         });
+    }
   };
+
   useEffect(() => {
     if (debouncedCounterTerm) addToServerCart();
   }, [debouncedCounterTerm]);
@@ -235,4 +258,5 @@ const OrderContextProvider = ({ children }) => {
   );
 };
 
+export { OrderContext };
 export default OrderContextProvider;
