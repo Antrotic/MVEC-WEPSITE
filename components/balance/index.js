@@ -26,10 +26,10 @@ function Balance() {
 
   const displayPrice = getPrice(orderedProduct?.total_price);
   const onClick = () => {
-    if (cookies.cart_id || orderedProduct) {
-      handleVisible(dc.order_list);
-    } else {
-      toast.error('Please add items to your cart first');
+    if (cookies.access_token || cookies.cart_id) handleVisible(dc.order_list);
+    else {
+      toast.error('Please login first');
+      handleAuth('login');
     }
   };
   return (

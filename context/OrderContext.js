@@ -145,13 +145,16 @@ const OrderContextProvider = ({children}) => {
       (cartData?.id && cartData?.shop_id != shop_id)
     ) {
       dispatch(setIsOpenConfirm(true));
-    } else {
+    } else if (cookies.access_token || cart_id) {
       setShopProduct(product);
       setListener({qty: product?.min_qty, id: product.id});
       batch(() => {
         dispatch(addToCart({...product, shop}));
         dispatch(getTotals(shop?.id));
       });
+    } else {
+      toast.error('Please login first');
+      handleAuth('login');
     }
   };
   const handleError = error => {
