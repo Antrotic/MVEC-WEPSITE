@@ -153,8 +153,13 @@ const OrderContextProvider = ({children}) => {
         dispatch(getTotals(shop?.id));
       });
     } else {
-      toast.error('Please login first');
-      handleAuth('login');
+      // Use guest cart functionality instead of requiring login
+      setShopProduct(product);
+      setListener({qty: product?.min_qty, id: product.id});
+      batch(() => {
+        dispatch(addToCart({...product, shop, isGuest: true}));
+        dispatch(getTotals(shop?.id));
+      });
     }
   };
   const handleError = error => {
