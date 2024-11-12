@@ -175,6 +175,12 @@ const OrderContextProvider = ({children}) => {
   };
 
   const addToServerCart = () => {
+    // Skip server sync for guest carts
+    if (!cookies.access_token && !cart_id) {
+      setCartLoader(false);
+      return;
+    }
+
     setCartLoader(true);
     if (cart_id) {
       CartApi.memberCreate({
