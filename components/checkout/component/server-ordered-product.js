@@ -4,7 +4,7 @@ import { DrawerConfig } from "../../../configs/drawer-config";
 import { MainContext } from "../../../context/MainContext";
 import { OrderContext } from "../../../context/OrderContext";
 import OrderedProduct from "../../products/ordered-product";
-import { clearCart, setCartData, setMember } from "../../../redux/slices/cart";
+import { clearCart, setCartData, setMember, initializeCart } from "../../../redux/slices/cart";
 import { Badge, Button, Spinner } from "reactstrap";
 import RiveResult from "../../loader/rive-result";
 import { getPrice } from "../../../utils/getPrice";
@@ -15,6 +15,7 @@ import { parseCookies } from "nookies";
 import SummaryProduct from "../../products/summary-product";
 import RadioButtonFillIcon from "remixicon-react/RadioButtonFillIcon";
 import { setIsOpenConfirmCheckout } from "../../../redux/slices/mainState";
+import { toast } from "react-toastify";
 
 const ServerOrderedProduct = () => {
   const dc = DrawerConfig;
@@ -59,6 +60,10 @@ const ServerOrderedProduct = () => {
       });
   };
   useEffect(() => {
+    const cookies = parseCookies();
+    if (!cookies.access_token && !cookies.cart_id) {
+      dispatch(initializeCart());
+    }
     fetchCart();
     if (cartData?.id || memberData?.id) {
       const intervalId = setInterval(() => {
@@ -73,6 +78,13 @@ const ServerOrderedProduct = () => {
     return isDone;
   };
   const handleCheckout = () => {
+    const cookies = parseCookies();
+    if (!cookies.access_token && !cookies.cart_id) {
+      toast.info(tl("Please log in to continue with checkout"));
+      handleVisible(dc.auth);
+      return;
+    }
+
     if (!getMemberStatus()) {
       handleVisible(dc.cart_summary);
     } else {
@@ -148,14 +160,18 @@ const ServerOrderedProduct = () => {
                     {balanceLoader ? (
                       <Spinner size="sm" />
                     ) : (
-                      getPrice(orderedProduct?.total_price)
+                      getPrice(orderedProduct?.total_price || cartList.cartTotalAmount)
                     )}
                   </div>
                 </div>
                 <Button
                   className="btn btn-success"
                   onClick={handleCheckout}
-                  disabled={orderedProduct?.total_price <= 0 ? true : false}
+                  disabled={
+                    (orderedProduct?.total_price || cartList.cartTotalAmount) <= 0
+                      ? true
+                      : false
+                  }
                 >
                   {tl("Checkout")}
                 </Button>
