@@ -1,16 +1,16 @@
-import React from "react";
-import GoogleMap from "../../components/map";
-import SEO from "../../components/seo";
-import Store from "../../components/view-in-map/stores";
-import { useContext } from "react";
-import { useEffect } from "react";
-import StoreFilter from "../../components/home/helper/StoreFilter";
-import { ShopContext } from "../../context/ShopContext";
-import { parseCookies } from "nookies";
+import React from 'react';
+import GoogleMap from '../../components/map';
+import SEO from '../../components/seo';
+import Store from '../../components/view-in-map/stores';
+import {useContext} from 'react';
+import {useEffect} from 'react';
+import StoreFilter from '../../components/home/helper/StoreFilter';
+import {ShopContext} from '../../context/ShopContext';
+import {parseCookies} from 'nookies';
 
 function ViewInMap() {
   const userLocation = parseCookies()?.userLocation;
-  const { stores, search, setSearch, handleFilter, searchStore, getStore } =
+  const {stores, search, setSearch, handleFilter, searchStore, getStore} =
     useContext(ShopContext);
 
   useEffect(() => {

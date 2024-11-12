@@ -343,9 +343,7 @@ function ProdctData({setVisible, product}) {
                 }>
                 <SubtractLineIcon />
               </button>
-              <span>{`${currentProduct?.qty} ${
-                product.product.unit?.translation?.title
-              } ${tl(' in cart')}`}</span>
+              <span>{currentProduct?.qty}</span>
               <button
                 className="dec"
                 onClick={() =>

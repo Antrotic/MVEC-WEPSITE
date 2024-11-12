@@ -5,47 +5,65 @@ import Bookmark3LineIcon from 'remixicon-react/Bookmark3LineIcon';
 import {useDispatch, useSelector} from 'react-redux';
 import {addCurrentStore} from '../../redux/slices/stores';
 import {getImage} from '../../utils/getImage';
-import GetWorkingHours from '../time-range/get-working-hours';
-import {images} from '../../constants/images'; // استيراد الصورة
+import StarSmileFillIcon from 'remixicon-react/StarSmileFillIcon';
+import RunFillIcon from 'remixicon-react/RunFillIcon';
+import getShortTimeType from '../../utils/getShortTimeType';
+import {useTranslation} from 'react-i18next';
+import ShopLogo from '../shopLogo/shopLogo';
+import useShopWorkingSchedule from '../../hooks/useShopWorkingSchedule';
+import FallbackImage from '../fallbackImage/fallbackImage';
 
 function StoreCard({data}) {
   const dispatch = useDispatch();
   const likedStore = useSelector(state => state.savedStore.savedStoreList);
   const cartData = likedStore.find(item => item.id === data.id);
+  const {isShopClosed} = useShopWorkingSchedule(data);
 
+  const {t: tl} = useTranslation();
+
+  console.log(data);
+
+  console.log('hhhhhh');
   return (
     <Link href={`/stores/${data.slug}`} key={data.uuid}>
       <div
-        className="store_item"
+        className={`wrapper ${!data.open || isShopClosed ? 'closed' : ''}`}
         onClick={() => dispatch(addCurrentStore(data))}>
-        <img
-          src={images.BackgroundStore} // استخدم الصورة كعنصر <img>
-          alt="background"
-          className="background_image" // تأكد من تنسيقها في CSS
-        />
-        <div className="mobile_card_header">
-          <div className="logo">{getImage(data.logo_img, 'shop logo')}</div>
-          <div>
-            <div className="title">{data.translation?.title}</div>
-            <div className="score">
-              <StarOutline />
-              {data.rating_avg ? parseInt(data.rating_avg)?.toFixed(1) : '0.0'}
-            </div>
-          </div>
+        <div className="header">
+          {(!data.open || isShopClosed) && (
+            <div className="closedText">{tl('closed')}</div>
+          )}
+          <FallbackImage
+            fill
+            src={data.background_img}
+            alt={data.translation?.title}
+            sizes="400px"
+            width={400}
+            height={400}
+          />
         </div>
-        <div className="logo">{getImage(data.logo_img, 'shop logo')}</div>
-        {cartData && (
-          <div className="liked">
-            <Bookmark3LineIcon color="var(--green)" />
+        <div className="body">
+          <div className="shopLogo">
+            <ShopLogo data={data} />
           </div>
-        )}
-        <div className="title">{data.translation?.title}</div>
-        <div className="short_description">{data.translation?.description}</div>
+          <h3 className="title">{data.translation?.title}</h3>
+          <p className="text">{data.translation?.description}</p>
+        </div>
         <div className="footer">
-          <GetWorkingHours shop={data} />
-          <div className="score">
-            <StarOutline />
-            {data.rating_avg ? parseInt(data.rating_avg)?.toFixed(1) : '0.0'}
+          <div className="flex">
+            <span className="greenDot" />
+            <RunFillIcon />
+            <span className="text">
+              {data.delivery_time?.from}-{data.delivery_time?.to}{' '}
+              {tl(getShortTimeType(data.delivery_time?.type))}
+            </span>
+          </div>
+          <span className="dot" />
+          <div className="flex">
+            <StarSmileFillIcon className="ratingIcon" />
+            <span className="text">
+              {data.rating_avg ? parseFloat(data.rating_avg).toFixed(1) : '0.0'}
+            </span>
           </div>
         </div>
       </div>

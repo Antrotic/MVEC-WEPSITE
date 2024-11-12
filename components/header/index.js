@@ -14,7 +14,7 @@ import {setLanguage} from '../../utils/setLanguage';
 import {getAddress} from '../../utils/getAddress';
 import {AuthContext} from '../../context/AuthContext';
 import {useRouter} from 'next/router';
-import CustomSelect from '../../components/form/form-item/customSelect'; // استيراد CustomSelect
+import CustomSelect from '../../components/form/form-item/customSelect';
 import informationService from '../../services/informationService';
 import {clearViewedList} from '../../redux/slices/viewed-product';
 
@@ -33,6 +33,8 @@ const Header = () => {
   const [openModal, setModal] = useState(null);
   const [isConfirm, setIsConfirm] = useState(true);
   const [defaultLanguage, setDefaultLanguage] = useState(cookies?.language_id);
+  const [scrolled, setScrolled] = useState(false);
+  const [lastScrollTop, setLastScrollTop] = useState(0);
 
   const user = useSelector(state => state.user.data, shallowEqual);
   const settings = useSelector(state => state.settings.data, shallowEqual);
@@ -42,9 +44,30 @@ const Header = () => {
     getAddress({setDefaultAddress, userLocation, user});
   }, [userLocation]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
+
+      if (scrollTop < lastScrollTop && scrollTop > 50) {
+        // يظهر الـ header عند التمرير للأعلى فقط
+        setScrolled(true);
+      } else {
+        // يخفي الـ header عند التمرير للأسفل
+        setScrolled(false);
+      }
+      setLastScrollTop(scrollTop);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [lastScrollTop]);
+
   const handleOk = e => {
     e.stopPropagation();
-    setCookies({name: 'set_location', value: true});
+    setCookie(null, 'set_location', 'true');
     setIsConfirm(true);
     router.push('/');
   };
@@ -99,7 +122,7 @@ const Header = () => {
   };
 
   return (
-    <div className="container">
+    <div className={`container header ${scrolled ? 'scrolled' : ''}`}>
       <div className="header">
         <Link href="/">
           <a className="logo">{settings?.title || 'Company logo'}</a>

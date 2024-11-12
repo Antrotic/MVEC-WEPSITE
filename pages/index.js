@@ -28,16 +28,15 @@ const Home = ({shopsList = [], error}) => {
     setStores(shopsList.data || []);
   }, [shopsList]);
 
-  console.log(bannerList);
-  console.log('=====test=====');
-
   return (
     <div className="home">
       <SEO />
       {bannerList.length > 0 && <Banner bannerList={bannerList} />}
-      <SeeMapMobile />
+      {/* <SeeMapMobile /> */}
       <Store filter={true} totalCount={shopsList?.meta?.total} />
       {activeParcel && <ParcelCard />}
+      <GroceryDelivery />
+
       <Footer />
     </div>
   );
