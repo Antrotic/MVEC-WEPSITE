@@ -15,6 +15,9 @@ const UpdatePassword = ({email}) => {
   const [userData, setUserData] = useState({});
   const [validate, setValidate] = useState(null);
 
+  console.log(email.replace(/\s/g, ''));
+  console.log('==================email================');
+
   const checkPassword = () => {
     if (
       userData.password &&
