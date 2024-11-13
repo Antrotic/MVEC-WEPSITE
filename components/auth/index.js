@@ -1,6 +1,7 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import dynamic from 'next/dynamic';
 import {useRouter} from 'next/router';
+import {useState} from 'react';
 import {toast} from 'react-toastify';
 import axiosService from '../../services/axios';
 import {MainContext} from '../../context/MainContext';
@@ -28,7 +29,7 @@ const Auth = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [isTimeOver, setIsTimeOver] = useState(null);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(null);
   const [error, setError] = useState(null);
   const [loader, setLoader] = useState(false);
   const [otp, setOtp] = useState(null);
@@ -38,12 +39,6 @@ const Auth = () => {
   const getOtpCode = e => {
     e.preventDefault();
     setLoader(true);
-    if (!email) {
-      setLoader(false);
-      setError('Email or phone number is required');
-      toast.error('Email or phone number is required');
-      return;
-    }
     phoneNumberSignIn(email)
       .then(res => {
         setCallback(res);
@@ -57,33 +52,25 @@ const Auth = () => {
         setError(error?.message);
       });
   };
-
   const handleConfirm = () => {
     callback
       .confirm(otp || '')
       .then(() => handleAuth('formfull'))
       .catch(() => setError('verify.error'));
   };
-
   const handleConfirmPasswordReset = () => {
-    if (!email) {
-      setError('Email or phone number is required');
-      toast.error('Email or phone number is required');
-      return;
-    }
     callback
       .confirm(otp || '')
       .then(() => handleAuth('updatePassword'))
       .catch(() => setError('verify.error'));
   };
-
   const onSubmit = e => {
     e.preventDefault();
     setLoader(true);
     axiosService
       .post('/auth/after-verify', {
         ...userData,
-        phone: email.replace(/\s/g, ''),
+        phone: email?.replace(/\s/g, ''),
       })
       .then(
         ({
@@ -183,7 +170,7 @@ const Auth = () => {
       {authContent === 'updatePassword' && (
         <UpdatePassword email={email} error={error} setError={setError} />
       )}
-      {(authContent === 'login' || authContent === 'email') && <SocialAuth />}
+      {(authContent == 'login' || authContent === 'email') && <SocialAuth />}
     </MyModal>
   );
 };
