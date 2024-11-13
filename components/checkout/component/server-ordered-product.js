@@ -79,7 +79,7 @@ const ServerOrderedProduct = () => {
   };
 
   const handleCheckout = () => {
-    if (!cookies.accessToken) {
+    if (!cookies.access_token) {
       toast.error(tl('Please login first'));
       handleAuth('login'); // توجيه المستخدم لتسجيل الدخول
       return;
