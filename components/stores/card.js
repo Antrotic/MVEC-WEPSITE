@@ -24,7 +24,7 @@ function StoreCard({data}) {
   const shop = useSelector(state => state.stores.currentStore, shallowEqual);
 
   const handleClick = () => {
-    if (!cookies.accessToken) {
+    if (!cookies.accessToken && !shop.id) {
       clearCartData(
         dispatch,
         setVisible,
