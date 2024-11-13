@@ -48,10 +48,10 @@ const PickupForm = ({deliveryPickup}) => {
   };
 
   useEffect(() => {
-    if (shop?.branches?.length > 0) {
-      setBranchId(shop.branches[0].id); // تعيين أول فرع كافتراضي عند تحميل المكون
+    if (shop?.branches?.length > 0 && branch_id === null) {
+      setBranchId(shop.branches[0].id); // تعيين أول فرع كافتراضي فقط إذا كان branch_id غير محدد
     }
-  }, [shop]);
+  }, [shop, branch_id]);
 
   const checkCoupon = value => {
     if (value) {
