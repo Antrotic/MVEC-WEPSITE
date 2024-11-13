@@ -14,6 +14,13 @@ const UpdatePassword = ({email}) => {
   const {t: tl} = useTranslation();
   const [userData, setUserData] = useState({});
   const [validate, setValidate] = useState(null);
+  const checkPassword = () => {
+    if (userData.password === userData.password_confirmation) {
+      setValidate('check');
+    } else {
+      setValidate('checked');
+    }
+  };
 
   const handleChange = event => {
     const {target} = event;
@@ -36,7 +43,6 @@ const UpdatePassword = ({email}) => {
       .catch(error => error?.message)
       .finally(() => setLoader(false));
   };
-
   return (
     <div className="auth">
       <div className="title">{tl('Update password')}</div>

@@ -22,7 +22,6 @@ const ForgotPassword = dynamic(() => import('./forgot-password'));
 
 const Auth = () => {
   const {handleAuth} = useContext(MainContext);
-  const [phone, setPhone] = useState(''); // الحالة المشتركة لرقم الهاتف
   const {phoneNumberSignIn} = useContext(AuthContext);
 
   const authContent = useSelector(state => state.mainState.authContent);
@@ -168,11 +167,8 @@ const Auth = () => {
           setError={setError}
         />
       )}
-      {handleAuth === 'forgotPassword' && (
-        <ForgotPassword setEmail={setPhone} email={phone} /> // تمرير setEmail و email
-      )}
-      {handleAuth === 'updatePassword' && (
-        <UpdatePassword email={phone} /> // تمرير رقم الهاتف كمُدخل إلى UpdatePassword
+      {authContent === 'updatePassword' && email && (
+        <UpdatePassword email={email} error={error} setError={setError} />
       )}
       {(authContent == 'login' || authContent === 'email') && <SocialAuth />}
     </MyModal>
