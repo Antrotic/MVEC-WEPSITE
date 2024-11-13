@@ -23,12 +23,17 @@ const ForgotPassword = ({
   }, []);
 
   const handleOtpSubmit = e => {
-    e.preventDefault();
+    if (e && e.preventDefault) {
+      e.preventDefault(); // منع إعادة تحميل الصفحة
+    } else {
+      console.error('Event not passed correctly to handleOtpSubmit');
+      return;
+    }
+
     if (email) {
       getOtpCode(email); // هنا ننقل الرقم بعد التحقق
     }
   };
-
   return (
     <div className="auth">
       <div className="title">{tl('Forgot password')}</div>
