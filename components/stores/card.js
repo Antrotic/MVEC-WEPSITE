@@ -1,47 +1,34 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import Link from 'next/link';
-import {useDispatch, useSelector, shallowEqual} from 'react-redux'; // تأكد من استيراد shallowEqual هنا
+import {StarOutline} from '../../public/assets/images/svg';
+import Bookmark3LineIcon from 'remixicon-react/Bookmark3LineIcon';
+import {useDispatch, useSelector} from 'react-redux';
 import {addCurrentStore} from '../../redux/slices/stores';
-import {useTranslation} from 'react-i18next';
-import {parseCookies} from 'nookies';
-import {clearCartData} from '../../utils/cartUtils';
-import {MainContext} from '../../context/MainContext';
-import {OrderContext} from '../../context/OrderContext';
-import useShopWorkingSchedule from '../../hooks/useShopWorkingSchedule';
-import FallbackImage from '../fallbackImage/fallbackImage';
-import ShopLogo from '../shopLogo/shopLogo';
-import getShortTimeType from '../../utils/getShortTimeType';
+import {getImage} from '../../utils/getImage';
 import StarSmileFillIcon from 'remixicon-react/StarSmileFillIcon';
 import RunFillIcon from 'remixicon-react/RunFillIcon';
+import getShortTimeType from '../../utils/getShortTimeType';
+import {useTranslation} from 'react-i18next';
+import ShopLogo from '../shopLogo/shopLogo';
+import useShopWorkingSchedule from '../../hooks/useShopWorkingSchedule';
+import FallbackImage from '../fallbackImage/fallbackImage';
 
 function StoreCard({data}) {
   const dispatch = useDispatch();
-  const cookies = parseCookies();
-  const {t: tl} = useTranslation();
-  const {setVisible} = useContext(MainContext);
-  const {setOrderedProduct, orderedProduct} = useContext(OrderContext); // استخدام OrderContext للحصول على setOrderedProduct و orderedProduct
+  const likedStore = useSelector(state => state.savedStore.savedStoreList);
+  const cartData = likedStore.find(item => item.id === data.id);
   const {isShopClosed} = useShopWorkingSchedule(data);
-  const shop = useSelector(state => state.stores.currentStore, shallowEqual);
 
-  const handleClick = () => {
-    // if (!cookies.accessToken && !shop.id) {
-    //   clearCartData(
-    //     dispatch,
-    //     setVisible,
-    //     setOrderedProduct,
-    //     orderedProduct,
-    //     shop.id,
-    //   );
-    // } else {
-    dispatch(addCurrentStore(data));
-    // }
-  };
+  const {t: tl} = useTranslation();
 
+  console.log(data);
+
+  console.log('hhhhhh');
   return (
     <Link href={`/stores/${data.slug}`} key={data.uuid}>
       <div
         className={`wrapper ${!data.open || isShopClosed ? 'closed' : ''}`}
-        onClick={handleClick}>
+        onClick={() => dispatch(addCurrentStore(data))}>
         <div className="header">
           {(!data.open || isShopClosed) && (
             <div className="closedText">{tl('closed')}</div>
