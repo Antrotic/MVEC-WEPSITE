@@ -36,6 +36,9 @@ const Auth = () => {
   const [callback, setCallback] = useState(undefined);
   const [userData, setUserData] = useState({});
 
+  console.log(email);
+  console.log('================uuu===============');
+
   const getOtpCode = e => {
     e.preventDefault();
     setLoader(true);
@@ -97,9 +100,6 @@ const Auth = () => {
         toast.error(error.message);
       });
   };
-
-  console.log(email);
-  console.log('================uuu===============');
 
   return (
     <MyModal
