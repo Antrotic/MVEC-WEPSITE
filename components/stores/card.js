@@ -24,17 +24,17 @@ function StoreCard({data}) {
   const shop = useSelector(state => state.stores.currentStore, shallowEqual);
 
   const handleClick = () => {
-    if (!cookies.accessToken && !shop.id) {
-      clearCartData(
-        dispatch,
-        setVisible,
-        setOrderedProduct,
-        orderedProduct,
-        shop.id,
-      );
-    } else {
-      dispatch(addCurrentStore(data));
-    }
+    // if (!cookies.accessToken && !shop.id) {
+    //   clearCartData(
+    //     dispatch,
+    //     setVisible,
+    //     setOrderedProduct,
+    //     orderedProduct,
+    //     shop.id,
+    //   );
+    // } else {
+    dispatch(addCurrentStore(data));
+    // }
   };
 
   return (
