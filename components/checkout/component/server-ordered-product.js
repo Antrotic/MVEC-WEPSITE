@@ -15,6 +15,7 @@ import {parseCookies} from 'nookies';
 import SummaryProduct from '../../products/summary-product';
 import RadioButtonFillIcon from 'remixicon-react/RadioButtonFillIcon';
 import {setIsOpenConfirmCheckout} from '../../../redux/slices/mainState';
+import {toast} from 'react-toastify';
 
 const ServerOrderedProduct = () => {
   const dc = DrawerConfig;
@@ -24,7 +25,7 @@ const ServerOrderedProduct = () => {
   const [status, setStatus] = useState(true);
   const [loader, setLoader] = useState(false);
   const cartList = useSelector(state => state.cart, shallowEqual);
-  const {handleVisible, setVisible} = useContext(MainContext);
+  const {handleAuth, handleVisible, setVisible} = useContext(MainContext);
   const {
     orderedProduct,
     setOrderedProduct,
@@ -35,6 +36,7 @@ const ServerOrderedProduct = () => {
   const cartData = useSelector(state => state.cart.cartData, shallowEqual);
   const shop = useSelector(state => state.stores.currentStore, shallowEqual);
   const memberData = cartList?.memberData;
+
   const clear = () => {
     deteleOrderCart(orderedProduct?.id);
     setVisible(false);
@@ -45,6 +47,7 @@ const ServerOrderedProduct = () => {
       dispatch(setCartData({}));
     });
   };
+
   const changeStatus = () => {
     setLoader(true);
     CartApi.statusChange({uuid: memberData?.uuid, cart_id: cookies.cart_id})
@@ -58,6 +61,7 @@ const ServerOrderedProduct = () => {
         setLoader(false);
       });
   };
+
   useEffect(() => {
     fetchCart();
     if (cartData?.id || memberData?.id) {
@@ -67,18 +71,27 @@ const ServerOrderedProduct = () => {
       return () => clearInterval(intervalId);
     }
   }, []);
+
   const getMemberStatus = () => {
     const newList = orderedProduct?.userCarts.filter(item => !item.user_id);
     const isDone = newList?.some(element => element.status);
     return isDone;
   };
+
   const handleCheckout = () => {
+    if (!cookies.accessToken) {
+      toast.error(tl('Please login first'));
+      handleAuth('login'); // توجيه المستخدم لتسجيل الدخول
+      return;
+    }
+
     if (!getMemberStatus()) {
       handleVisible(dc.cart_summary);
     } else {
       dispatch(setIsOpenConfirmCheckout(true));
     }
   };
+
   return (
     <>
       {orderedProduct?.userCarts?.length > 0 ? (
