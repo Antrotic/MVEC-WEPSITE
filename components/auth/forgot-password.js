@@ -6,7 +6,7 @@ import {MainContext} from '../../context/MainContext';
 import InputPhone from '../form/form-item/InputPhone';
 
 const ForgotPassword = ({
-  setEmail, // هذا يمثل setPhone في المكون الأب
+  setEmail,
   email,
   loader,
   getOtpCode,
@@ -15,21 +15,27 @@ const ForgotPassword = ({
 }) => {
   const {handleAuth} = useContext(MainContext);
   const {t: tl} = useTranslation();
-
   useEffect(() => {
     return () => {
-      setEmail(''); // إعادة تعيين البريد الإلكتروني عند إلغاء المكون
+      setEmail('');
       setError(null);
     };
   }, []);
 
+  const handleOtpSubmit = e => {
+    e.preventDefault();
+    if (email) {
+      getOtpCode(email); // هنا ننقل الرقم بعد التحقق
+    }
+  };
+
   return (
     <div className="auth">
       <div className="title">{tl('Forgot password')}</div>
-      <Form autoComplete="off" onSubmit={getOtpCode}>
+      <Form autoComplete="off" onSubmit={handleOtpSubmit}>
         <InputPhone
           name="number"
-          onChange={e => setEmail(e.target.value)} // تحديث رقم الهاتف في الحالة المشتركة
+          onChange={e => setEmail(e.target.value)}
           error={error}
           value={email}
         />
