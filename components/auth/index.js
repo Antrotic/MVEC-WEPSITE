@@ -98,6 +98,9 @@ const Auth = () => {
       });
   };
 
+  console.log(email);
+  console.log('================uuu===============');
+
   return (
     <MyModal
       className="auth"
