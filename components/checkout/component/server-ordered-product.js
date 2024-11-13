@@ -1,30 +1,30 @@
-import React, { useContext, useEffect, useState } from "react";
-import { batch, shallowEqual, useDispatch, useSelector } from "react-redux";
-import { DrawerConfig } from "../../../configs/drawer-config";
-import { MainContext } from "../../../context/MainContext";
-import { OrderContext } from "../../../context/OrderContext";
-import OrderedProduct from "../../products/ordered-product";
-import { clearCart, setCartData, setMember } from "../../../redux/slices/cart";
-import { Badge, Button, Spinner } from "reactstrap";
-import RiveResult from "../../loader/rive-result";
-import { getPrice } from "../../../utils/getPrice";
-import { useTranslation } from "react-i18next";
-import { deteleOrderCart } from "../../../utils/createCart";
-import { CartApi } from "../../../api/main/cart";
-import { parseCookies } from "nookies";
-import SummaryProduct from "../../products/summary-product";
-import RadioButtonFillIcon from "remixicon-react/RadioButtonFillIcon";
-import { setIsOpenConfirmCheckout } from "../../../redux/slices/mainState";
+import React, {useContext, useEffect, useState} from 'react';
+import {batch, shallowEqual, useDispatch, useSelector} from 'react-redux';
+import {DrawerConfig} from '../../../configs/drawer-config';
+import {MainContext} from '../../../context/MainContext';
+import {OrderContext} from '../../../context/OrderContext';
+import OrderedProduct from '../../products/ordered-product';
+import {clearCart, setCartData, setMember} from '../../../redux/slices/cart';
+import {Badge, Button, Spinner} from 'reactstrap';
+import RiveResult from '../../loader/rive-result';
+import {getPrice} from '../../../utils/getPrice';
+import {useTranslation} from 'react-i18next';
+import {deteleOrderCart} from '../../../utils/createCart';
+import {CartApi} from '../../../api/main/cart';
+import {parseCookies} from 'nookies';
+import SummaryProduct from '../../products/summary-product';
+import RadioButtonFillIcon from 'remixicon-react/RadioButtonFillIcon';
+import {setIsOpenConfirmCheckout} from '../../../redux/slices/mainState';
 
 const ServerOrderedProduct = () => {
   const dc = DrawerConfig;
   const dispatch = useDispatch();
   const cookies = parseCookies();
-  const { t: tl } = useTranslation();
+  const {t: tl} = useTranslation();
   const [status, setStatus] = useState(true);
   const [loader, setLoader] = useState(false);
-  const cartList = useSelector((state) => state.cart, shallowEqual);
-  const { handleVisible, setVisible } = useContext(MainContext);
+  const cartList = useSelector(state => state.cart, shallowEqual);
+  const {handleVisible, setVisible} = useContext(MainContext);
   const {
     orderedProduct,
     setOrderedProduct,
@@ -32,8 +32,8 @@ const ServerOrderedProduct = () => {
     balanceLoader,
     cartLoader,
   } = useContext(OrderContext);
-  const cartData = useSelector((state) => state.cart.cartData, shallowEqual);
-  const shop = useSelector((state) => state.stores.currentStore, shallowEqual);
+  const cartData = useSelector(state => state.cart.cartData, shallowEqual);
+  const shop = useSelector(state => state.stores.currentStore, shallowEqual);
   const memberData = cartList?.memberData;
   const clear = () => {
     deteleOrderCart(orderedProduct?.id);
@@ -47,11 +47,11 @@ const ServerOrderedProduct = () => {
   };
   const changeStatus = () => {
     setLoader(true);
-    CartApi.statusChange({ uuid: memberData?.uuid, cart_id: cookies.cart_id })
-      .then((res) => {
+    CartApi.statusChange({uuid: memberData?.uuid, cart_id: cookies.cart_id})
+      .then(res => {
         setStatus(res.data.status);
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
       })
       .finally(() => {
@@ -68,8 +68,8 @@ const ServerOrderedProduct = () => {
     }
   }, []);
   const getMemberStatus = () => {
-    const newList = orderedProduct?.userCarts.filter((item) => !item.user_id);
-    const isDone = newList?.some((element) => element.status);
+    const newList = orderedProduct?.userCarts.filter(item => !item.user_id);
+    const isDone = newList?.some(element => element.status);
     return isDone;
   };
   const handleCheckout = () => {
@@ -85,7 +85,7 @@ const ServerOrderedProduct = () => {
         <>
           <div className="order-header">
             <div className="total-count">
-              {cartList.cartTotalQuantity} {tl("products")}
+              {cartList.cartTotalQuantity} {tl('products')}
             </div>
             <div className="order-condition">
               <div className="replacement">
@@ -97,12 +97,12 @@ const ServerOrderedProduct = () => {
             </div>
             {!cookies.cart_id && (
               <div className="clear-btn" onClick={clear}>
-                {tl("Clear all")}
+                {tl('Clear all')}
               </div>
             )}
           </div>
           {orderedProduct?.userCarts
-            ?.filter((item) => item.cartDetails.length)
+            ?.filter(item => item.cartDetails.length)
             .map((item, key) => (
               <div key={key}>
                 <div className="customer">
@@ -135,7 +135,7 @@ const ServerOrderedProduct = () => {
                           : false
                       }
                     />
-                  )
+                  ),
                 )}
               </div>
             ))}
@@ -143,7 +143,7 @@ const ServerOrderedProduct = () => {
             <>
               <div className="to-checkout">
                 <div className="total-amount">
-                  <div className="label">{tl("Total amount")}</div>
+                  <div className="label">{tl('Total amount')}</div>
                   <div className="count">
                     {balanceLoader ? (
                       <Spinner size="sm" />
@@ -155,9 +155,8 @@ const ServerOrderedProduct = () => {
                 <Button
                   className="btn btn-success"
                   onClick={handleCheckout}
-                  disabled={orderedProduct?.total_price <= 0 ? true : false}
-                >
-                  {tl("Checkout")}
+                  disabled={orderedProduct?.total_price <= 0 ? true : false}>
+                  {tl('Checkout')}
                 </Button>
               </div>
             </>
@@ -165,11 +164,11 @@ const ServerOrderedProduct = () => {
             <div className="to-checkout">
               {status ? (
                 <Button className="btn btn-success" onClick={changeStatus}>
-                  {loader ? <Spinner /> : tl("Done")}
+                  {loader ? <Spinner /> : tl('Done')}
                 </Button>
               ) : (
                 <Button className="btn btn-secondary" onClick={changeStatus}>
-                  {loader ? <Spinner /> : tl("Edit Order")}
+                  {loader ? <Spinner /> : tl('Edit Order')}
                 </Button>
               )}
             </div>

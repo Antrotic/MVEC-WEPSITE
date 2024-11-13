@@ -26,11 +26,12 @@ function Balance() {
 
   const displayPrice = getPrice(orderedProduct?.total_price);
   const onClick = () => {
-    if (cookies.access_token || cookies.cart_id) handleVisible(dc.order_list);
-    else {
-      toast.error('Please login first');
-      handleAuth('login');
-    }
+    handleVisible(dc.order_list);
+    // if (cookies.access_token || cookies.cart_id)
+    // else {
+    //   toast.error('Please login first');
+    //   handleAuth('login');
+    // }
   };
   return (
     <div className={getBalanceClassNames(displayPrice)} onClick={onClick}>

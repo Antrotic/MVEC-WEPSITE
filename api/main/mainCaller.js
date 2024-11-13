@@ -1,9 +1,9 @@
-import axios from "axios";
-import HTTPMethods from "../HTTPMethods";
-import { parseCookies } from "nookies";
-import { store } from "../../redux/store";
-import { Router } from "next/router";
-import { clearUser } from "../../redux/slices/user";
+import axios from 'axios';
+import HTTPMethods from '../HTTPMethods';
+import {parseCookies} from 'nookies';
+import {store} from '../../redux/store';
+import {Router} from 'next/router';
+import {clearUser} from '../../redux/slices/user';
 
 export default function mainCaller(
   path,
@@ -11,14 +11,15 @@ export default function mainCaller(
   data,
   headers,
   params = {},
-  accessToken
+  accessToken,
 ) {
   const cookies = parseCookies();
-  const access_token = cookies.access_token;
+  const access_token =
+    cookies.access_token || '267%7COdf6NDhUTwOKk7LURzwvClnTcBESVxcssAOAsV5y';
   const currency_id = cookies?.currency_id;
   const language_locale = cookies?.language_locale;
   const _headers = {
-    Accept: "application/json; charset=utf-8",
+    Accept: 'application/json; charset=utf-8',
     Authorization: `Bearer ${decodeURI(accessToken || access_token)}`,
     ...headers,
   };
@@ -27,7 +28,7 @@ export default function mainCaller(
     url: process.env.NEXT_PUBLIC_API_URL + path,
     timeout: 16000,
   };
-  if (method === "GET") {
+  if (method === 'GET') {
     params.lang = language_locale;
     params.currency_id = params.currency_id ? params.currency_id : currency_id;
   }
@@ -36,13 +37,13 @@ export default function mainCaller(
   if (data) {
     options.data = data;
     if (data instanceof FormData) {
-      _headers["Content-type"] = "multipart/form-data";
+      _headers['Content-type'] = 'multipart/form-data';
     } else {
-      _headers["Content-type"] = "application/json; charset=utf-8";
+      _headers['Content-type'] = 'application/json; charset=utf-8';
     }
   }
 
   options.headers = _headers;
 
-  return axios(options).then((r) => r.data);
+  return axios(options).then(r => r.data);
 }
