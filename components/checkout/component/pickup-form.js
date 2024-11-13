@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector, shallowEqual} from 'react-redux';
 import CalendarCheckLineIcon from 'remixicon-react/CalendarCheckLineIcon';
 import CheckboxBlankCircleLineIcon from 'remixicon-react/CheckboxBlankCircleLineIcon';
 import CheckboxCircleFillIcon from 'remixicon-react/CheckboxCircleFillIcon';
@@ -26,7 +26,7 @@ const PickupForm = ({deliveryPickup}) => {
   const {handleVisible} = useContext(MainContext);
   const {orderedProduct} = useContext(OrderContext);
 
-  const [branch_id, setBrandId] = useState(null);
+  const [branch_id, setBranchId] = useState(null);
   const [promoCode, setPromoCode] = useState('');
   const [error, setError] = useState(null);
 
@@ -44,12 +44,12 @@ const PickupForm = ({deliveryPickup}) => {
   const day = dayjs(delivery_date).format('ddd');
 
   const handleBranch = id => {
-    setBrandId(id);
+    setBranchId(id); // تعيين الفرع كـ "selected" عند الضغط عليه
   };
 
   useEffect(() => {
     if (shop?.branches?.length > 0) {
-      setBrandId(shop.branches[0].id); // تعيين أول فرع كافتراضي
+      setBranchId(shop.branches[0].id); // تعيين أول فرع كافتراضي عند تحميل المكون
     }
   }, [shop]);
 
@@ -114,7 +114,10 @@ const PickupForm = ({deliveryPickup}) => {
       {shop?.branches?.map((type, key) => (
         <div key={key} className="type" onClick={() => handleBranch(type.id)}>
           <div className="left">
-            <div className={`select-icon ${branch_id === type.id && 'select'}`}>
+            <div
+              className={`select-icon ${
+                branch_id === type.id ? 'select' : ''
+              }`}>
               {branch_id === type.id ? (
                 <CheckboxCircleFillIcon />
               ) : (
@@ -134,7 +137,7 @@ const PickupForm = ({deliveryPickup}) => {
           <div className="naming">
             <div className="label">{tl('delivery.time')}</div>
             <div className="value">
-              {isToday ? tl('today') : isTomorrow ? tl('tomorrow') : day},
+              {isToday ? tl('today') : isTomorrow ? tl('tomorrow') : day},{' '}
               {delivery_time}
             </div>
           </div>
@@ -146,9 +149,7 @@ const PickupForm = ({deliveryPickup}) => {
       <InputText
         label="Promo code"
         placeholder="Code"
-        onBlur={e => {
-          checkCoupon(e.target.value);
-        }}
+        onBlur={e => checkCoupon(e.target.value)}
         value={promoCode?.name}
         onChange={e => setPromoCode(e.target.value)}
         invalid={error}
