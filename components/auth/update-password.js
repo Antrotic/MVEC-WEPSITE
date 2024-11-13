@@ -9,15 +9,20 @@ import {setVisibleAuth} from '../../redux/slices/mainState';
 import InputPassword from '../form/form-item/InputPassword';
 
 const UpdatePassword = ({email}) => {
-  // استخدام email هنا لتمثيل رقم الهاتف
   const [loader, setLoader] = useState(false);
   const dispatch = useDispatch();
   const {t: tl} = useTranslation();
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState({
+    password: '',
+    password_confirmation: '',
+  });
   const [validate, setValidate] = useState(null);
 
   const checkPassword = () => {
-    if (userData.password === userData.password_confirmation) {
+    if (
+      userData.password &&
+      userData.password === userData.password_confirmation
+    ) {
       setValidate('check');
     } else {
       setValidate('checked');
@@ -25,25 +30,41 @@ const UpdatePassword = ({email}) => {
   };
 
   const handleChange = event => {
-    const {target} = event;
-    const value = target.type === 'radio' ? target.checked : target.value;
-    const {name} = target;
+    const {name, value} = event.target;
     setUserData({
       ...userData,
       [name]: value,
     });
   };
 
-  const handleUpdatePassword = e => {
-    setLoader(true);
+  const handleUpdatePassword = async e => {
     e.preventDefault();
-    UserApi.passwordUpdate({...userData, phone: email?.replace(/\s/g, '')}) // استخدام email كرقم الهاتف
-      .then(() => {
-        toast.success(tl('updated.successfully'));
-        dispatch(setVisibleAuth(false));
-      })
-      .catch(error => error?.message)
-      .finally(() => setLoader(false));
+
+    if (!email) {
+      toast.error(tl('Phone number is required'));
+      return;
+    }
+
+    if (validate !== 'check') {
+      toast.error(tl('Passwords do not match'));
+      return;
+    }
+
+    setLoader(true);
+    try {
+      await UserApi.passwordUpdate({
+        ...userData,
+        phone: email.replace(/\s/g, ''),
+      });
+      toast.success(tl('Password updated successfully'));
+      dispatch(setVisibleAuth(false));
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.message || tl('Failed to update password');
+      toast.error(errorMessage);
+    } finally {
+      setLoader(false);
+    }
   };
 
   return (
@@ -55,6 +76,7 @@ const UpdatePassword = ({email}) => {
           label="Password"
           placeholder="********"
           onChange={handleChange}
+          value={userData.password}
         />
         <InputPassword
           name="password_confirmation"
@@ -62,6 +84,7 @@ const UpdatePassword = ({email}) => {
           placeholder="*********"
           onChange={handleChange}
           onBlur={checkPassword}
+          value={userData.password_confirmation}
           className={
             validate === 'check'
               ? 'success'
@@ -70,12 +93,13 @@ const UpdatePassword = ({email}) => {
               : ''
           }
         />
-        <FormFeedback tooltip valid>
-          Sweet! that name is available
-        </FormFeedback>
-        <Button data-loader={loader} type="submit">
-          <Loader4LineIcon />
-          {tl('Update')}
+        {validate === 'checked' && (
+          <FormFeedback tooltip invalid>
+            {tl('Passwords do not match')}
+          </FormFeedback>
+        )}
+        <Button data-loader={loader} type="submit" disabled={loader}>
+          {loader ? <Loader4LineIcon /> : tl('Update')}
         </Button>
       </Form>
     </div>
